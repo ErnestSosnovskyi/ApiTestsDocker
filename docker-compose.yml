@@ -1,0 +1,21 @@
+services:
+  e2e-tests:
+    build: .
+    image: crm-test-automation
+    environment:
+      - BASE_API_URL=http://app:3000
+      - BASE_UI_URL=http://frontend:5173
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-adminpassword}
+    networks:
+      - crm_network
+    volumes:
+      - ./playwright-report:/e2e/playwright-report
+      - ./allure-results:/e2e/allure-results
+      - ./test-results:/e2e/test-results
+    command: sh -c "npx wait-on http://app:3000 && npx playwright test"
+
+networks:
+  crm_network:
+    external: true
+    name: employee-management-crm_default
